@@ -21,9 +21,17 @@
             .rs-auth-layout {
                 min-height: 100vh;
                 display: flex;
+                flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 padding: 2rem 1rem;
+            }
+            /* Allow scrolling on mobile when keyboard opens */
+            @media (max-height: 750px), (max-width: 600px) {
+                .rs-auth-layout {
+                    justify-content: flex-start;
+                    padding-top: 2rem;
+                }
             }
             .rs-auth-container {
                 width: 100%;
