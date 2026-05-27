@@ -34,10 +34,17 @@ class OtpVerificationController extends Controller
         }
 
         $otp = EmailOtp::generateFor($request->user()->email);
+        $user = $request->user();
 
-        Mail::to($request->user()->email)->send(
-            new OtpVerificationMail($otp->otp, $request->user()->name)
-        );
+        dispatch(function () use ($user, $otp) {
+            try {
+                Mail::to($user->email)->send(
+                    new OtpVerificationMail($otp->otp, $user->name)
+                );
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Background OTP resend failed: ' . $e->getMessage());
+            }
+        })->afterResponse();
 
         return back()->with('status', 'otp-sent');
     }
