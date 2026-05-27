@@ -18,12 +18,16 @@ class EmailVerificationNotificationController extends Controller
         }
 
         $otp = \App\Models\EmailOtp::generateFor($request->user()->email);
+        $user = $request->user();
 
-        try {
-            \Illuminate\Support\Facades\Mail::to($request->user()->email)->send(new \App\Mail\OtpVerificationMail($otp->otp, $request->user()->name));
-            return back()->with('status', 'verification-link-sent');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Could not resend the OTP email. Please check your SMTP configuration.');
-        }
+        dispatch(function () use ($user, $otp) {
+            try {
+                \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\OtpVerificationMail($otp->otp, $user->name));
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Background OTP resend failed: ' . $e->getMessage());
+            }
+        })->afterResponse();
+
+        return back()->with('status', 'verification-link-sent');
     }
 }

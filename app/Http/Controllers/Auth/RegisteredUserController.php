@@ -48,14 +48,14 @@ class RegisteredUserController extends Controller
         // Generate OTP
         $otp = EmailOtp::generateFor($user->email);
 
-        try {
-            // Attempt to send OTP email
-            Mail::to($user->email)->send(new OtpVerificationMail($otp->otp, $user->name));
-        } catch (\Exception $e) {
-            // If email fails, delete user so they aren't stuck unverified, and return error
-            $user->delete();
-            return back()->withInput()->withErrors(['email' => 'Could not send the OTP email. Please ensure your SMTP configuration and App Passwords are correct.']);
-        }
+        // Send email in the background after the page loads
+        dispatch(function () use ($user, $otp) {
+            try {
+                Mail::to($user->email)->send(new OtpVerificationMail($otp->otp, $user->name));
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Background OTP send failed: ' . $e->getMessage());
+            }
+        })->afterResponse();
 
         Auth::login($user);
 
