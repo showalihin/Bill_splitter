@@ -45,14 +45,19 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // We removed the default verification.verify route in favor of our OTP system.
-        // Therefore, we don't fire the default Registered event which attempts to send the default email link.
+        // Generate OTP
+        $otp = EmailOtp::generateFor($user->email);
+
+        try {
+            // Attempt to send OTP email
+            Mail::to($user->email)->send(new OtpVerificationMail($otp->otp, $user->name));
+        } catch (\Exception $e) {
+            // If email fails, delete user so they aren't stuck unverified, and return error
+            $user->delete();
+            return back()->withInput()->withErrors(['email' => 'Could not send the OTP email. Please ensure your SMTP configuration and App Passwords are correct.']);
+        }
 
         Auth::login($user);
-
-        // Generate and send OTP for email verification
-        $otp = EmailOtp::generateFor($user->email);
-        Mail::to($user->email)->send(new OtpVerificationMail($otp->otp, $user->name));
 
         return redirect(route('verification.notice'));
     }

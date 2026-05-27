@@ -17,8 +17,13 @@ class EmailVerificationNotificationController extends Controller
             return redirect()->intended(route('dashboard', absolute: false));
         }
 
-        $request->user()->sendEmailVerificationNotification();
+        $otp = \App\Models\EmailOtp::generateFor($request->user()->email);
 
-        return back()->with('status', 'verification-link-sent');
+        try {
+            \Illuminate\Support\Facades\Mail::to($request->user()->email)->send(new \App\Mail\OtpVerificationMail($otp->otp, $request->user()->name));
+            return back()->with('status', 'verification-link-sent');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Could not resend the OTP email. Please check your SMTP configuration.');
+        }
     }
 }
