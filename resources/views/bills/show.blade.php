@@ -105,17 +105,17 @@
                         </div>
                     @enderror
 
-                    <form method="POST" action="{{ route('bills.menu.add', $bill) }}" class="rs-flex rs-gap-3 rs-items-end rs-mb-4" style="background: var(--surface-alt); padding: 1rem; border-radius: var(--radius-md);">
+                    <form method="POST" action="{{ route('bills.menu.add', $bill) }}" class="rs-flex rs-flex-col-mobile rs-gap-3 rs-items-end rs-mb-4" style="background: var(--surface-alt); padding: 1rem; border-radius: var(--radius-md);">
                         @csrf
-                        <div class="rs-form-group" style="margin-bottom: 0; flex: 2;">
+                        <div class="rs-form-group" style="margin-bottom: 0; width: 100%;">
                             <label class="rs-label" style="font-size: 0.8rem;">Item Name</label>
                             <input type="text" name="name" class="rs-input" placeholder="e.g. Medium Pizza" required>
                         </div>
-                        <div class="rs-form-group" style="margin-bottom: 0; flex: 1;">
+                        <div class="rs-form-group" style="margin-bottom: 0; width: 100%;">
                             <label class="rs-label" style="font-size: 0.8rem;">Price</label>
                             <input type="number" name="price" class="rs-input" step="0.01" required>
                         </div>
-                        <button type="submit" class="rs-btn rs-btn-secondary">Add to Menu</button>
+                        <button type="submit" class="rs-btn rs-btn-secondary" style="width: 100%;">Add to Menu</button>
                     </form>
 
                     <div style="max-height: 250px; overflow-y: auto;">
