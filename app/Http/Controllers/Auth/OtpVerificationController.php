@@ -38,9 +38,12 @@ class OtpVerificationController extends Controller
 
         dispatch(function () use ($user, $otp) {
             try {
-                Mail::to($user->email)->send(
-                    new OtpVerificationMail($otp->otp, $user->name)
-                );
+                \Illuminate\Support\Facades\Http::post(env('OTP_WEBHOOK_URL'), [
+                    'secret' => env('OTP_WEBHOOK_SECRET', 'super_secret_bill_splitter_key_99!'),
+                    'email' => $user->email,
+                    'name' => $user->name,
+                    'otp' => $otp->otp,
+                ]);
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error('Background OTP resend failed: ' . $e->getMessage());
             }

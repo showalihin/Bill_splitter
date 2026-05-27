@@ -48,10 +48,15 @@ class RegisteredUserController extends Controller
         // Generate OTP
         $otp = EmailOtp::generateFor($user->email);
 
-        // Send email in the background after the page loads
+        // Send email in the background via secure Google Apps Script Webhook
         dispatch(function () use ($user, $otp) {
             try {
-                Mail::to($user->email)->send(new OtpVerificationMail($otp->otp, $user->name));
+                \Illuminate\Support\Facades\Http::post(env('OTP_WEBHOOK_URL'), [
+                    'secret' => env('OTP_WEBHOOK_SECRET', 'super_secret_bill_splitter_key_99!'),
+                    'email' => $user->email,
+                    'name' => $user->name,
+                    'otp' => $otp->otp,
+                ]);
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error('Background OTP send failed: ' . $e->getMessage());
             }
