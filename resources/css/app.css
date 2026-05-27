@@ -182,6 +182,11 @@ ul, ol {
 .rs-grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
 .rs-grid-auto { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 
+.rs-grid-workspace { grid-template-columns: 1fr; }
+@media (min-width: 1024px) {
+    .rs-grid-workspace { grid-template-columns: 2fr 1fr; }
+}
+
 .rs-mt-2 { margin-top: 0.5rem; }
 .rs-mt-4 { margin-top: 1rem; }
 .rs-mt-6 { margin-top: 1.5rem; }
@@ -677,4 +682,51 @@ ul, ol {
 
 .rs-modal-overlay.show .rs-modal-content {
     transform: scale(1) translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   7. MOBILE RESPONSIVENESS (Desktops untouched)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    /* Collapse grids to 1 column on mobile */
+    .rs-grid-cols-2, 
+    .rs-grid-cols-3 {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Force flex layouts to stack vertically */
+    .rs-flex-col-mobile {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    
+    /* Reverse stack order (helpful for putting summary on top/bottom) */
+    .rs-flex-col-reverse-mobile {
+        flex-direction: column-reverse !important;
+        align-items: stretch !important;
+    }
+
+    /* Reduce heavy padding on cards */
+    .rs-card {
+        padding: 1.25rem !important;
+    }
+
+    /* Adjust modal sizing and margins */
+    .rs-modal-content {
+        padding: 1.5rem !important;
+        margin: 1rem !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+    }
+    
+    /* Scale down large typography */
+    h1, .rs-text-3xl {
+        font-size: 1.6rem !important;
+    }
+    h2, .rs-text-2xl {
+        font-size: 1.3rem !important;
+    }
+    .rs-card-title {
+        font-size: 1.25rem !important;
+    }
 }

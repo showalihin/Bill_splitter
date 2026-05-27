@@ -56,7 +56,7 @@
             </div>
         @endif
 
-        <div class="rs-grid" style="grid-template-columns: 1fr; gap: 2rem; @media(min-width: 1024px) { grid-template-columns: 2fr 1fr; }">
+        <div class="rs-grid rs-grid-workspace" style="gap: 2rem;">
             
             {{-- LEFT COLUMN: Participants & Items --}}
             <div class="rs-flex-col rs-gap-6">
